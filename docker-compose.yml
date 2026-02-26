@@ -1,0 +1,29 @@
+services:
+
+  postgres:
+    image: postgres:15
+    container_name: airman_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: airman_db
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: ./backend
+    container_name: airman_backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgresql://postgres:password@postgres:5432/airman_db
+
+  frontend:
+    build: ./frontend/maverick-lite
+    container_name: airman_frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
